@@ -1,109 +1,114 @@
 # Labor Resilience Framework
 
-## Overview
-The **Labor Resilience Framework** is a standardized framework for measuring and improving workforce resilience across the U.S. economy. By integrating internal workforce metrics with external macroeconomic indicators, this framework provides a holistic approach to understanding, predicting, and mitigating risks associated with human capital.
+## Project Overview
 
-## Key Capabilities
+The **Labor Resilience Framework** is a standardized, industry-agnostic analytical engine designed to quantify, diagnose, and forecast workforce stability. By bridging the gap between localized HR telemetry (absenteeism, overtime dependency, attrition) and broad macroeconomic indicators, this framework provides enterprise leadership and policy architects with a rigorous, data-driven approach to human capital risk management. 
 
-*   **Forecasting Labor Shortages:** By analyzing historical trends in absenteeism, overtime dependency, and attrition, the framework identifies early warning signs of workforce instability, allowing organizations to proactively address impending labor shortages.
-*   **Relevance to National Economic Shocks:** The framework explicitly incorporates macroeconomic data (e.g., U.S. Unemployment Rate via FRED API) to contextualize internal metrics. This allows users to simulate and measure how external economic shocks—such as recessions or industry-specific booms—impact their specific workforce stability.
-*   **Composite Resilience Scoring:** Translates complex workforce behavior into an easy-to-understand, composite "Resilience Score" (0-100), categorizing organizational risk into Low, Moderate, or High tiers.
-*   **Interpretability with SHAP:** Utilizes SHapley Additive exPlanations (SHAP) to unpack the Resilience Score, clearly identifying which specific factor (e.g., severe overtime dependency vs. high attrition) is the primary driver of risk.
+At its core, the framework calculates a composite **Resilience Score**—a normalized metric that identifies systemic vulnerabilities before they cascade into operational failures. Coupled with an interactive simulation suite and interpretability layers, organizations can run sophisticated scenario analyses to model recovery trajectories against a backdrop of dynamic economic conditions.
 
 ---
 
-## How to Use the Repository
+## National Interest & Policy Relevance
+
+In an era defined by rapid labor market shifts and unpredictable economic shocks, workforce stability is a critical component of national economic security. This framework addresses critical vulnerabilities in the U.S. labor market by:
+
+*   **Forecasting Labor Shortages:** By structurally evaluating the leading indicators of burnout (e.g., productivity-adjusted overtime) and disengagement (absenteeism), the model forecasts localized labor shortages, allowing for preemptive strategic interventions.
+*   **Contextualizing Macro-Economic Shocks:** The health of an organizational workforce does not exist in a vacuum. By integrating live macroeconomic telemetry (e.g., national unemployment trends), the framework contextualizes internal performance against systemic, nation-wide pressures, providing a realistic assessment of recovery difficulty during periods of economic volatility.
+*   **Establishing Adaptability Standards:** As a standardized framework, it enables consistent benchmarking across diverse sectors (from Manufacturing to Healthcare), fostering a data-driven dialogue on labor market adaptability and resilience standards for 2026 and beyond.
+
+---
+
+## Core Features
+
+### 1. Composite Resilience Scoring
+Translates multi-dimensional workforce behavior into a unified `Resilience Score` (0-100). The mathematical engine standardizes metrics against domain-specific risk thresholds and applies intelligent penalty weights to assess operational fragility.
+
+### 2. Intelligence Layer (Macro-Economic Integration)
+Breaks down data silos by dynamically pulling live telemetry from federal institutions. 
+*   **FRED API:** Fetches the current U.S. Unemployment Rate (Series: UNRATE) to act as a systemic stability buffer or friction multiplier during scenario simulations.
+*   **BLS API:** Interfaces with the Bureau of Labor Statistics to establish true industry baselines (e.g., Average Weekly Overtime for Manufacturing), enabling precise Z-Score normalizations for individual organizations.
+
+### 3. SHAP Interpretability & Driver Drift
+Utilizes SHapley Additive exPlanations (SHAP) to unpack the "black box" of the composite score. 
+*   **Risk Attribution:** Precisely isolates the primary driving factor of score degradation (e.g., identifying that Attrition contributed -18 points).
+*   **Trend Analysis (Driver Drift):** Evaluates longitudinal data to identify whether a specific risk factor is becoming a systemic, structural threat over time, outputting automated narrative summaries for leadership.
+
+### 4. Recovery Velocity & Simulation
+An optimization engine that allows architects to simulate strategic interventions (e.g., targeted overtime reduction, focus efficiency training, headcount expansion). 
+*   **Recovery Velocity:** Quantifies the month-over-month impact of active interventions.
+*   **Timeline Estimation:** Projects the exact number of months required to reach a target Resilience Score, applying mathematical friction penalties if the model is operating under "Pandemic Mode" or severe economic stress.
+
+---
+
+## Technical Architecture
+
+The repository is modularly structured to support rapid scaling, API integration, and integration into existing enterprise data pipelines:
+
+*   `core_engine/`: Contains the foundational mathematical models (`resilience.py`), Z-Score normalizers, and productivity-adjustment logic.
+*   `intelligence_layer/`: API wrapper classes (`fred_integration.py`, `bls_fetcher.py`) utilizing `python-dotenv` for secure, external data ingestion.
+*   `interpretability/`: Houses the `ResilienceExplainer`, utilizing `shap` and `matplotlib` to generate mathematical transparency and visual trend evaluations.
+*   `optimization/`: Contains the `WorkforceSimulator` for forecasting scenario impacts and generating strategic, rules-based recommendations.
+*   `app.py`: A comprehensive `Streamlit` dashboard providing an interactive, front-end interface for executing real-time economic stress tests and visualizing recovery trajectories.
+
+---
+
+## Getting Started
 
 ### Prerequisites
 *   Python 3.8+
-*   A [FRED API Key](https://fred.stlouisfed.org/docs/api/api_key.html) (if you intend to fetch live macroeconomic data).
+*   *(Optional but Recommended)* A [FRED API Key](https://fred.stlouisfed.org/docs/api/api_key.html) and a [BLS API Key](https://data.bls.gov/registrationEngine/) for live intelligence layering.
 
 ### Installation
 
-Clone the repository and install the required dependencies:
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/your-username/labor-resilience-framework.git
+   cd labor-resilience-framework
+   ```
 
-```bash
-git clone https://github.com/your-username/labor-resilience-framework.git
-cd labor-resilience-framework
-pip install -r requirements.txt
-```
+2. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-### 1. Generating Synthetic Data
-To test the framework without sensitive HR data, you can generate a synthetic dataset representing various industries (Healthcare, Retail, Manufacturing). The generated data correlates workforce behavior with a mock macroeconomic stability index.
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root directory and add your API keys:
+   ```env
+   FRED_API_KEY=your_fred_api_key_here
+   BLS_API_KEY=your_bls_api_key_here
+   ```
 
+### Execution
+
+**Generate Synthetic Data (For Testing):**
+Creates 15,000 records simulating Healthcare, Retail, and Manufacturing workforces.
 ```bash
 python examples/generate_data.py
 ```
-*This will create `examples/synthetic_labor_data.csv` with 15,000 records.*
 
-### 2. Calculating a Resilience Score
-Use the `ResilienceScorer` to evaluate a dataset and generate a risk score.
-
-```python
-import pandas as pd
-from core_engine.resilience import ResilienceScorer
-
-# Load your data
-df = pd.read_csv('examples/synthetic_labor_data.csv')
-
-# Initialize and evaluate
-scorer = ResilienceScorer(df)
-results = scorer.evaluate()
-
-print(f"Score: {results['resilience_score']} - Risk: {results['risk_category']}")
+**Run SHAP Trend Analysis:**
+Evaluates Driver Drift over the synthetic time-series and exports a visualization chart.
+```bash
+python examples/run_trend_analysis.py
 ```
 
-### 3. Explaining the Score (SHAP Interpretability)
-Understand *why* a specific score was generated by identifying the most negative contributing factor.
-
-```python
-from interpretability.explainer import ResilienceExplainer
-
-# Assuming 'scorer' is initialized from the previous step
-metrics = scorer.calculate_metrics()
-
-# Create a background dataset (e.g., a historical baseline) to train the explainer
-background_df = pd.DataFrame([
-    {'absenteeism_rate': 0.05, 'overtime_dependency': 0.10, 'attrition_rate': 0.02},
-    {'absenteeism_rate': 0.10, 'overtime_dependency': 0.15, 'attrition_rate': 0.05},
-])
-
-explainer = ResilienceExplainer(background_df)
-explanation = explainer.explain_score(metrics)
-
-print(f"Top Risk Factor: {explanation['top_negative_factor']}")
-print(f"Impact: {explanation['top_negative_impact']}")
-```
-
-### 4. Fetching Live Economic Data (FRED)
-Integrate real-world economic indicators into your analysis.
-
-```python
-import os
-from intelligence_layer.fred_integration import FredIntegration
-
-# Ensure your API key is set in your environment variables
-# os.environ['FRED_API_KEY'] = 'your_api_key_here'
-
-fred_api = FredIntegration()
-latest_unemployment = fred_api.get_current_unemployment_rate()
-
-print(f"Current US Unemployment Rate: {latest_unemployment}%")
+**Launch the Interactive Dashboard:**
+Starts the Streamlit application for scenario simulation and economic stress testing.
+```bash
+streamlit run app.py
 ```
 
 ---
 
-## Project Structure
-*   `api/`: (Placeholder) For future REST/GraphQL endpoints.
-*   `benchmarking/`: (Placeholder) For industry-standard comparisons.
-*   `core_engine/`: Contains the primary scoring and evaluation logic (`resilience.py`).
-*   `examples/`: Contains example scripts and generated synthetic data.
-*   `forecasting/`: (Placeholder) For future predictive modeling.
-*   `intelligence_layer/`: Integrations with external data sources (`fred_integration.py`).
-*   `interpretability/`: Logic for unpacking model decisions (`explainer.py`).
-*   `optimization/`: (Placeholder) For future prescriptive analytics.
+## Sample Images
+
+![Resilience Trend Analysis](examples/resilience_trend_plot.png)
+
+![Workforce Resilience Dashboard1](examples/Workforce Resilience Dashboard1.jpg)
+
+![Macro-Economic Stress Test](examples/Macro-Economic Stress Test.jpg)
 
 ---
-
 ## Disclaimer
 This project is provided "As Is" without any warranties of any kind. The authors and contributors assume no responsibility for the accuracy, reliability, or completeness of the output generated by this framework. End users are solely responsible for validating and interpreting the output before making any business or economic decisions.
+---
