@@ -104,7 +104,7 @@ streamlit run app.py
 
 ![Resilience Trend Analysis](examples/resilience_trend_plot.png)
 
-![Workforce Resilience Dashboard1](examples/Workforce20%Resilience20% Dashboard1.jpg)
+![Workforce Resilience Dashboard1](examples/Workforce20%Resilience20%Dashboard1.jpg)
 
 ![Macro-Economic Stress Test](examples/Macro-Economic20%Stress20%Test.jpg)
 
