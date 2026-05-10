@@ -3,3 +3,7 @@ scikit-learn
 shap
 fredapi
 statsmodels
+requests
+python-dotenv
+matplotlib
+streamlit
