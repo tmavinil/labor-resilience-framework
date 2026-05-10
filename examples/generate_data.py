@@ -57,6 +57,15 @@ def generate_synthetic_data(num_records=15000, output_path="examples/synthetic_l
     # If absent, actual hours are 0, else scheduled + overtime
     actual_hrs_col = np.where(is_absent_col, 0, scheduled_hrs_col) + overtime_hrs_col
     
+    # 4. Focus Efficiency: Base between 0.45 and 0.85
+    focus_efficiency_col = np.random.uniform(0.45, 0.85, num_records)
+    # Simulate 2026 workplace fatigue: lower significantly if overtime > 10
+    high_overtime_mask = overtime_hrs_col > 10
+    # Drop efficiency by an additional 0.15 to 0.35 for those with high overtime
+    focus_efficiency_col[high_overtime_mask] -= np.random.uniform(0.15, 0.35, size=high_overtime_mask.sum())
+    # Ensure it doesn't drop below a minimum threshold (e.g., 0.10) just in case
+    focus_efficiency_col = np.clip(focus_efficiency_col, 0.10, 1.0)
+    
     # Compile DataFrame
     df = pd.DataFrame({
         'Date': [d.strftime('%Y-%m-%d') for d in dates],
@@ -67,7 +76,8 @@ def generate_synthetic_data(num_records=15000, output_path="examples/synthetic_l
         'Overtime_Hrs': overtime_hrs_col.round(1),
         'Is_Absent': is_absent_col.astype(int),
         'Terminated': terminated_col.astype(int),
-        'Macro_Economic_Stability': macro_economic_stability.round(3)
+        'Macro_Economic_Stability': macro_economic_stability.round(3),
+        'Focus_Efficiency': focus_efficiency_col.round(3)
     })
     
     # Sort by date for chronological consistency
