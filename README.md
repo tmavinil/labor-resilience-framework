@@ -62,7 +62,7 @@ The repository is modularly structured to support rapid scaling, API integration
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/labor-resilience-framework.git
+   git clone https://github.com/tmavinil/labor-resilience-framework.git
    cd labor-resilience-framework
    ```
 
